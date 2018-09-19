@@ -15,11 +15,24 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 	console.log('New User Connected');
+				
+			//Greeting the individual user
+	socket.emit('newMessage', {
+		from: 'Admin',
+		text: 'Welcome to the Chat App.',
+		createdAt: new Date().getTime()
+	});
 		
-	//Custom Event listener for 'createMessage' event 
+			//Alert everyother user except the one that joined. 
+	socket.broadcast.emit('newMessage', {
+		from: 'Admin',
+		text: 'New User Joined',
+		createdAt: new Date().getTime()
+	});
+	
 	socket.on('createMessage', (message) => {
 		console.log('createMessage', message);
-		//io.emit used to emit to every connection
+				//io.emit used to emit to every connection
 		io.emit('newMessage', {
 			from: message.from,
 			text: message.text,
@@ -28,7 +41,7 @@ io.on('connection', (socket) => {
 	});
 	
 	socket.on('disconnect', () => {
-	console.log('Server.js - CLIENT DISCONNECTED');
+		console.log('Server.js - CLIENT DISCONNECTED');
 	});
 });
 
@@ -47,6 +60,9 @@ server.listen(port, () => {
 
 
 
+//	//Custom Event listener for 'createMessage' event 
+//	socket.on('createMessage', (message) => {
+//		console.log('createMessage', message);
 
 //	//Event emiter to client-side from server
 //	socket.emit('newEmail', {
