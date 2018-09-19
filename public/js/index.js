@@ -13,7 +13,13 @@ socket.on('newMessage', function(message) {
 	console.log('New Message', message);
 });
 
-
+socket.emit('createMessage', {
+	from: 'Frank',
+	text: 'We are not hiring you anymore.'
+}, function (serverData) {
+	//Add acknowledge message on client-side
+	console.log('Got the message.', serverData)
+});
 
 //	
 //	//Client-side script that emits 'createEmail' event to server. 

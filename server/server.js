@@ -23,10 +23,12 @@ io.on('connection', (socket) => {
 			//Alert everyother user except the one that joined. 
 	socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined'));
 	
-	socket.on('createMessage', (message) => {
+	socket.on('createMessage', (message, callback) => {
 		console.log('createMessage', message);
-				//io.emit used to emit to every connection
+		//io.emit used to emit to every connection
 		io.emit('newMessage', generateMessage(message.from, message.text));
+		callback('This is from the server');
+		//When we call callback, it communicates function at client-side for the acknowledgement message.
 	});
 	
 	socket.on('disconnect', () => {
