@@ -15,17 +15,16 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 	console.log('New User Connected');
-	
-	//Server Event emiter to client-side
-	socket.emit('newMessage', {
-		from: "Jimena",
-		text: "Hey, what time do you want to go to Starbucks?",
-		createAt: 123123
-	});
-	
+		
 	//Custom Event listener for 'createMessage' event 
 	socket.on('createMessage', (message) => {
 		console.log('createMessage', message);
+		//io.emit used to emit to every connection
+		io.emit('newMessage', {
+			from: message.from,
+			text: message.text,
+			createdAt: new Date().getTime()
+		});
 	});
 	
 	socket.on('disconnect', () => {
@@ -42,6 +41,13 @@ server.listen(port, () => {
 
 
 
+
+
+
+
+
+
+
 //	//Event emiter to client-side from server
 //	socket.emit('newEmail', {
 //		from: "jimena@example.com",
@@ -52,4 +58,11 @@ server.listen(port, () => {
 //	//Custom Event listener for 'createEmail' event 
 //	socket.on('createEmail', (newEmail) => {
 //		console.log('createEmail', newEmail);
+//	});
+
+//	//Server Event emiter to client-side. Emits only to a single connection
+//	socket.emit('newMessage', {
+//		from: "Jimena",
+//		text: "Hey, what time do you want to go to Starbucks?",
+//		createAt: 123123
 //	});
