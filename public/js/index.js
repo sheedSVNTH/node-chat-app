@@ -10,16 +10,24 @@ socket.on('disconnect', function() {
 
 //Server-side event listener 
 socket.on('newMessage', function(message) {
+	
 	console.log('New Message', message);
+	var li = jQuery('<li></li>');
+	li.text(`${message.from}: ${message.text}`);
+	
+	jQuery('#messages').append(li);
 });
 
-socket.emit('createMessage', {
-	from: 'Frank',
-	text: 'We are not hiring you anymore.'
-}, function (serverData) {
-	//Add acknowledge message on client-side
-	console.log('Got the message.', serverData)
+jQuery('#message-form').on('submit', function (e) {
+	e.preventDefault();
+	socket.emit('createMessage', {
+		from: 'USER',
+		text: jQuery('[name=message]').val()
+	}, function () {
+		
+	});
 });
+
 
 //	
 //	//Client-side script that emits 'createEmail' event to server. 
