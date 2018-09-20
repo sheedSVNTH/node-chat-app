@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-var {generateMessage} = require('./utils/message');
+var {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -31,17 +31,21 @@ io.on('connection', (socket) => {
 		//When we call callback, it communicates function at client-side for the acknowledgement message.
 	});
 	
+	socket.on('createLocationMessage',  (coords) => {
+		io.emit('newLocationMessage', generateLocationMessage('ADMIN', coords.latitude, coords.longitude));
+	});
+	
 	socket.on('disconnect', () => {
 		console.log('Server.js - CLIENT DISCONNECTED');
 	});
 });
 
-//EMPYT COMMENT   		console.log('Server.js - CLIENT DISCONNECTED');
-
 	//Local Port 3000 set-up
 server.listen(port, () => {
 	console.log(`SERVER IS RUNNING ON PORT: ${port}`);
 });
+
+
 
 
 
