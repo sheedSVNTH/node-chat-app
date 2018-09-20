@@ -10,20 +10,20 @@ socket.on('disconnect', function() {
 
 //Server-side event listener 
 socket.on('newMessage', function(message) {
-	
-	console.log('New Message', message);
+	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var li = jQuery('<li></li>');
-	li.text(`${message.from}: ${message.text}`);
+	li.text(`${message.from} ${formattedTime}: ${message.text}`);
 	
 	jQuery('#messages').append(li);
 });
 
 socket.on('newLocationMessage', function(message) {
+	var formattedTime = moment(message.createdAt).format('h:mm a');
 	var li = jQuery('<li></li>');
 		
 	//_blank opens link in different browser tab
 	var a = jQuery('<a target="_blank">My Current Location</a>');
-	li.text(`${message.from}: `);
+	li.text(`${message.from} ${formattedTime}: `);
 		
 	//Set the href value to the url from message.js
 	a.attr('href', message.url);
