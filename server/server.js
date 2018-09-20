@@ -4,8 +4,10 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 var {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
+
 
 	//Call to Express
 var app = express();
@@ -22,6 +24,14 @@ io.on('connection', (socket) => {
 		
 			//Alert everyother user except the one that joined. 
 	socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined'));
+	
+	socket.on('join', (params, callback) => {
+		if (!isRealString(params.name) || !isRealString(params.room)) {
+			callback('Name and room name are required.');
+		}
+		
+		callback();
+	});
 	
 	socket.on('createMessage', (message, callback) => {
 		console.log('createMessage', message);
