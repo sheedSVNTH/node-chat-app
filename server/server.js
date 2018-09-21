@@ -35,20 +35,27 @@ io.on('connection', (socket) => {
 		
 			//Alert everyother user except the one that joined. 
 	socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
-	
 		callback();
 	});
 	
 	socket.on('createMessage', (message, callback) => {
-		console.log('createMessage', message);
-		//io.emit used to emit to every connection
-		io.emit('newMessage', generateMessage(message.from, message.text));
+		var user = users.getUser(socket.id);
+		
+		if (user && isRealString(message.text)) {
+				//io.emit used to emit to every connection
+			io.to(user.room).emit('newMessage', generateMessage(user.name,  message.text));		
+		}
+
 		callback();
 		//When we call callback, it communicates function at client-side for the acknowledgement message.
 	});
 	
 	socket.on('createLocationMessage',  (coords) => {
-		io.emit('newLocationMessage', generateLocationMessage('ADMIN', coords.latitude, coords.longitude));
+		var user = users.getUser(socket.id);
+		
+		if(user) {
+			io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+		}
 	});
 	
 	socket.on('disconnect', () => {
